@@ -15,24 +15,47 @@ class Ball {
     this.xLocation = xLocation;
     this.yLocation = yLocation;
     this.radius = radius;
+    this.xMovement = 5;
+    this.yMovement = 2;
   }
 
-    draw() {
-        canvas.clearRect(0, 0, canvasWidth, canvasHeight);
+  draw() {
+    canvas.clearRect(0, 0, canvasWidth, canvasHeight);
     canvas.beginPath();
     canvas.arc(this.xLocation, this.yLocation, this.radius, 0, 2 * Math.PI);
     canvas.fillStyle = "white";
     canvas.fill();
   }
 }
+const myball = new Ball(100, 100, 30);
 
-const firstBall = new Ball(100, 100, 20);
-firstBall.draw();
+function animate() {
+  requestAnimationFrame(animate);
+  canvasWidth = window.innerWidth;
+  canvasHeight = window.innerHeight;
+  myball.xLocation += myball.xMovement;
+  myball.yLocation += myball.yMovement;
+  if (
+    myball.xLocation + myball.radius >= canvasWidth ||
+    myball.xLocation - myball.radius <= 0
+  ) {
+    myball.xMovement = myball.xMovement * -1;
+  }
+  if (
+    myball.yLocation + myball.radius >= canvasHeight ||
+    myball.yLocation - myball.radius <= 0
+  ) {
+    myball.yMovement = myball.yMovement * -1;
+  }
+  myball.draw();
+}
 
-addEventListener("mousemove", (event) => {
-    mouseXLocation = event.clientX;
-    mouseYLocation = event.clientY;
-    firstBall.xLocation = mouseXLocation;
-    firstBall.yLocation = mouseYLocation;
-    firstBall.draw();
-});
+animate(myball);
+
+// addEventListener("mousemove", (event) => {
+//   mouseXLocation = event.clientX;
+//   mouseYLocation = event.clientY;
+//   firstBall.xLocation = mouseXLocation;
+//   firstBall.yLocation = mouseYLocation;
+//   firstBall.draw();
+// });
