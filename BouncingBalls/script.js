@@ -4,53 +4,70 @@ let canvasWidth = window.innerWidth;
 let canvasHeight = window.innerHeight;
 canvasElement.width = canvasWidth;
 canvasElement.height = canvasHeight;
+canvas.globalAlpha = 0.5;
 //c.lineWidth= 5;
 //c.globalAlpha = 0.5;
 
 let mouseXLocation = 0;
 let mouseYLocation = 0;
 
+function getRandom(minimum, maximum) {
+  return Math.random() * (maximum - minimum) + minimum;
+}
+
+function getRandomColor() {
+  return `rgb(${getRandom(0, 250)},${getRandom(0, 250)},${getRandom(0, 250)})`;
+}
+
 class Ball {
-  constructor(xLocation, yLocation, radius) {
-    this.xLocation = xLocation;
-    this.yLocation = yLocation;
-    this.radius = radius;
-    this.xMovement = 5;
-    this.yMovement = 2;
+  constructor() {
+    this.xLocation = getRandom(0, window.innerWidth);
+    this.yLocation = getRandom(0, window.innerHeight);
+    this.radius = getRandom(15, 30);
+    this.xMovement = getRandom(1, 12);
+    this.yMovement = getRandom(1, 12);
+    this.color = getRandomColor();
   }
 
   draw() {
-    canvas.clearRect(0, 0, canvasWidth, canvasHeight);
     canvas.beginPath();
     canvas.arc(this.xLocation, this.yLocation, this.radius, 0, 2 * Math.PI);
-    canvas.fillStyle = "white";
+    canvas.fillStyle = this.color;
     canvas.fill();
   }
 }
-const myball = new Ball(100, 100, 30);
 
-function animate() {
-  requestAnimationFrame(animate);
-  canvasWidth = window.innerWidth;
-  canvasHeight = window.innerHeight;
-  myball.xLocation += myball.xMovement;
-  myball.yLocation += myball.yMovement;
-  if (
-    myball.xLocation + myball.radius >= canvasWidth ||
-    myball.xLocation - myball.radius <= 0
-  ) {
-    myball.xMovement = myball.xMovement * -1;
-  }
-  if (
-    myball.yLocation + myball.radius >= canvasHeight ||
-    myball.yLocation - myball.radius <= 0
-  ) {
-    myball.yMovement = myball.yMovement * -1;
-  }
-  myball.draw();
+const balls = [];
+
+for (let i = 0; i < 10; i++) {
+  const ball = new Ball();
+  balls.push(ball);
 }
 
-animate(myball);
+function animate() {
+  canvasHeight = window.innerHeight;
+  canvasWidth = window.innerWidth;
+  canvas.clearRect(0, 0, canvasWidth, canvasHeight);
+  balls.forEach((ball) => {
+    ball.xLocation += ball.xMovement;
+    ball.yLocation += ball.yMovement;
+    if (
+      ball.xLocation + ball.radius >= canvasWidth ||
+      ball.xLocation - ball.radius <= 0
+    ) {
+      ball.xMovement *= -1;
+    }
+    if (
+      ball.yLocation + ball.radius >= canvasHeight ||
+      ball.yLocation - ball.radius <= 0
+    ) {
+      ball.yMovement *= -1;
+    }
+    ball.draw();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
 
 // addEventListener("mousemove", (event) => {
 //   mouseXLocation = event.clientX;
